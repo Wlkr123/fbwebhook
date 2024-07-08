@@ -8,13 +8,17 @@ app.get('/', (req, res) => {
 
 app.get('/webhook', (req, res) => {
   // Handle webhook data here
+  console.log('test webhook')
   console.log(req.body);
   res.send(req.query['hub.challenge']);
 });
 
 app.post('/webhook', (req, res) => {
   // Handle webhook data here
-  console.log(req.body);
+  console.log('dasfdgsasdsa')
+      const data = req.body;
+
+  console.log({data});
   res.sendStatus(200);
 });
 
