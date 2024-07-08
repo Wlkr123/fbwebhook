@@ -1,6 +1,18 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(
+  bodyParser.urlencoded({
+    limit: '10mb',
+    extended: true,
+  }),
+);
+
+app.use(bodyParser.json({ limit: '10mb' }));
+
+app.use(bodyParser.raw({ limit: '10mb', type: '*/*' }));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
