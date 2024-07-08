@@ -1,16 +1,25 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
+const debug = require('debug');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 const NGROK_URL = 'https://8ff6-59-153-112-82.ngrok-free.app';
 
+const debugFacebook = debug('erxes-facebook:facebook');
+const debugRequest = (debugInstance, req) =>
+  debugInstance(`
+        Receiving ${req.path} request from ${req.headers.origin}
+        body: ${JSON.stringify(req.body || {})}
+        queryParams: ${JSON.stringify(req.query)}
+    `);
+
 app.use(bodyParser.json());
 
 app.use((req, _res, next) => {
-  console.log(req);
+  debugRequest(debugFacebook, req);
 
   next();
 });
