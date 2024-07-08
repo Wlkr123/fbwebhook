@@ -7,18 +7,26 @@ app.get('/', (req, res) => {
 });
 
 app.get('/webhook', (req, res) => {
-  // Handle webhook data here
-  console.log('test webhook')
-  console.log(req.body);
-  res.send(req.query['hub.challenge']);
+  let VERIFY_TOKEN = 'your_verify_token';
+
+  let mode = req.query['hub.mode'];
+  let token = req.query['hub.verify_token'];
+  let challenge = req.query['hub.challenge'];
+
+  if (mode && token) {
+    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+      console.log('WEBHOOK_VERIFIED');
+      res.status(200).send(challenge);
+    } else {
+      res.sendStatus(403);
+    }
+  }
 });
 
 app.post('/webhook', (req, res) => {
-  // Handle webhook data here
-  console.log('dasfdgsasdsa')
-      const data = req.body;
-
-  console.log({data});
+  console.log('Webhook POST request received');
+  const data = req.body;
+  console.log({ data });
   res.sendStatus(200);
 });
 
