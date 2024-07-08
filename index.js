@@ -1,18 +1,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const axios = require('axios');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(
-  bodyParser.urlencoded({
-    limit: '10mb',
-    extended: true,
-  }),
-);
+const NGROK_URL = 'https://8ff6-59-153-112-82.ngrok-free.app';
 
-app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.json());
 
-app.use(bodyParser.raw({ limit: '10mb', type: '*/*' }));
+app.use((req, _res, next) => {
+  console.log(req);
+
+  next();
+});
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -35,13 +36,37 @@ app.get('/webhook', (req, res) => {
   }
 });
 
-app.post('/webhook', (req, res) => {
+app.post('/webhook', async (req, res) => {
   console.log('Webhook POST request received');
+
   const data = req.body;
-  console.log({ data });
-  res.sendStatus(200);
+  if (data.object !== 'page') {
+    return;
+  }
+
+  try {
+    const response = await axios({
+      method: 'POST',
+      url: `${NGROK_URL}/pl:facebook/facebook/receive`,
+      headers: {
+        ...req.headers,
+      },
+      data,
+      params: req.query,
+    });
+
+    console.log('Forwarded to Ngrok:', response.data);
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error forwarding to Ngrok:', error);
+    res.sendStatus(500);
+  }
 });
 
+app.use((error, _req, res, _next) => {
+  console.error(error.stack);
+  res.status(500).send(error.message);
+});
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
