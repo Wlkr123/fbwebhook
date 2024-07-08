@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
 app.get('/webhook', (req, res) => {
   // Handle webhook data here
   console.log(req.body);
-  res.sendStatus(200);
+  res.send(1107845948);
 });
 
 app.post('/webhook', (req, res) => {
