@@ -6,6 +6,12 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+app.get('/webhook', (req, res) => {
+  // Handle webhook data here
+  console.log(req.body);
+  res.sendStatus(200);
+});
+
 app.post('/webhook', (req, res) => {
   // Handle webhook data here
   console.log(req.body);
